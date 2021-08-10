@@ -1,13 +1,13 @@
 import { memo } from "react";
-import { Col, Row } from 'antd';
-import { contextContain, toDoItem } from "interfaces";
+import { Col, Row, List } from 'antd';
+import reorder from '../../../utils/reorder';
 import { useGlobalContext } from "utils/ContextAPI";
-import { List, Button, Skeleton } from 'antd';
+import ToDoItem from "components/molecules/ToDoItem";
+import { contextContain, toDoItem } from "interfaces";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-
 function ListComponent() {
-  const { toDoList, deleteToDo, editToDo }: contextContain = useGlobalContext();
+  const { toDoList, updateOrder }: contextContain = useGlobalContext();
 
   const getItemStyle = (isDragging: any , draggableStyle: any )=> ({
     userSelect: "none",
@@ -20,7 +20,14 @@ function ListComponent() {
       <Row gutter={16}>
         <Col span={24}>
           <DragDropContext
-            onDragEnd={() => {}}
+            onDragEnd={(result: any) => {
+              const { destination, source }: any = result;
+              updateOrder(reorder({
+                array: toDoList, 
+                sourceIndex: source.index, 
+                destinationIndex: destination.index
+              }))
+            }}
           >
             <Droppable
               droppableId={`droppable`}
@@ -37,12 +44,11 @@ function ListComponent() {
                         itemLayout="horizontal"
                         loadMore={true}
                         dataSource={toDoList}
-                        renderItem={({ id, title, description }:toDoItem): any => (
+                        renderItem={({ id, title, description }:toDoItem, index: number): any => (
                           <Draggable
-                            index={id}
-                            key={`item-${id}`}
-                            draggableId={`item-${id}`}
-                          
+                            index={index}
+                            key={`item-${index}`}
+                            draggableId={`item-${index}`}
                           >
                             {(provided, snapshot) => {
                               return (
@@ -55,19 +61,11 @@ function ListComponent() {
                                     provided.draggableProps.style
                                   )}
                                 >
-                                  <List.Item
-                                      actions={[
-                                        <Button key="list-loadmore-edit" danger>Edit</Button>, 
-                                        <Button key="list-loadmore-delete" danger onClick={() => deleteToDo(id)}>Delete</Button>
-                                      ]}
-                                    >
-                                      <Skeleton avatar  loading={false} active>
-                                        <List.Item.Meta
-                                          title={<a href="https://ant.design">{title}</a>}
-                                          description={description}
-                                        />
-                                      </Skeleton>
-                                    </List.Item>
+                                  <ToDoItem 
+                                    id={id} 
+                                    title={title} 
+                                    description={description}
+                                  />
                                 </div>
                               )
                             }}
