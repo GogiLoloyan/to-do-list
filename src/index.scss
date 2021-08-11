@@ -21,3 +21,13 @@ html, body {
 .ant-typography {
     text-align: center;
 }
+
+.ant-layout-header {
+    h1.ant-typography {
+        color: white;
+        text-align: center;
+    }
+}
+main.ant-layout-content  {
+    margin: 30px 0;
+}

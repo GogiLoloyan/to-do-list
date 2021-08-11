@@ -26,9 +26,10 @@ function App() {
   return (
     <MyGlobalContext.Provider value={{ toDoList, addToDo, deleteToDo, editToDo, updateOrder }}>
       <Layout>
-        <Header></Header>
-        <Content>
+        <Header>
           <Title>To Do List</Title>
+        </Header>
+        <Content>
           <Row justify="center" gutter={[8,8]}>
             <Col span={24}>
               <Row justify="center" gutter={[8,8]}>
